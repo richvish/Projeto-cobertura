@@ -1,0 +1,77 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Carrinho de Compras</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; }
+    table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+    th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+    th { background: #f0f0f0; }
+    button { padding: 6px 10px; cursor: pointer; }
+  </style>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+</head>
+<body>
+  <h1>Carrinho de Compras</h1>
+  <p>Total de itens: <span id="total-itens">0</span></p>
+  <table id="tabela-carrinho">
+    <thead>
+      <tr>
+        <th>Local</th>
+        <th>SKU</th>
+        <th>Descrição</th>
+        <th>Estoque Atual</th>
+        <th>Vendas Período</th>
+        <th>Cobertura</th>
+        <th>Reposição</th>
+        <th>Ações</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+  <br>
+  <button id="exportarExcel">Exportar para Excel</button>
+  <script>
+    function carregarCarrinho() {
+      const salvo = localStorage.getItem("carrinhoDeCompras");
+      return salvo ? JSON.parse(salvo) : [];
+    }
+    function atualizarTabela() {
+      const carrinho = carregarCarrinho();
+      const tbody = document.querySelector("#tabela-carrinho tbody");
+      tbody.innerHTML = "";
+      carrinho.forEach((item, idx) => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>${item.local}</td>
+          <td>${item.sku}</td>
+          <td>${item.descricao}</td>
+          <td>${item.estoqueAtual}</td>
+          <td>${item.vendasPeriodo}</td>
+          <td>${item.coberturaDias}</td>
+          <td contenteditable="true">${item.reposicao}</td>
+          <td><button onclick="removerItem(${idx})">❌ Remover</button></td>
+        `;
+        tbody.appendChild(tr);
+      });
+      document.getElementById("total-itens").textContent = carrinho.length;
+    }
+    function removerItem(idx) {
+      const carrinho = carregarCarrinho();
+      carrinho.splice(idx, 1);
+      localStorage.setItem("carrinhoDeCompras", JSON.stringify(carrinho));
+      atualizarTabela();
+    }
+    document.getElementById("exportarExcel").addEventListener("click", () => {
+      const carrinho = carregarCarrinho();
+      const ws = XLSX.utils.json_to_sheet(carrinho);
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, "Pedido de Compra");
+      XLSX.writeFile(wb, "pedido_compra.xlsx");
+    });
+    atualizarTabela();
+  </script>
+</body>
+</html>
