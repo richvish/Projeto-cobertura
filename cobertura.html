@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"/>
+<title>Dashboard Sandrini - Cobertura</title>
+<link href="style.css" rel="stylesheet"/>
+</head>
+<body class="cobertura-page">
+<div class="loader" id="loader">Carregando...</div>
+<a class="logo-home-text" href="index.html">← Voltar para Home</a>
+<div class="menu-toggle">☰</div>
+<nav class="sidebar">
+<ul>
+<li><a href="index.html">Home</a></li>
+<li><a href="vendas.html">Vendas</a></li>
+<li><a href="estoque.html">Estoque</a></li>
+<li><a href="cobertura.html">Cobertura de Estoque</a></li>
+<li><a href="marcas.html">Marcas</a></li>
+</ul>
+</nav>
+<main class="container">
+<header class="header-main">
+<h1>Cobertura de Estoque</h1>
+</header>
+<section class="card">
+<div class="filters">
+<label>Marketplace:</label>
+<select id="filtro-local"></select>
+<label>Data Inicial:</label>
+<input id="filtro-data-inicial" type="date"/>
+<label>Data Final:</label>
+<input id="filtro-data-final" type="date"/>
+<button id="btn-aplicar">Aplicar Filtro</button>
+<div class="totais">
+        Total de Itens Vendidos: <strong id="total-itens">0</strong>
+</div>
+<table class="styled-table">
+<thead></thead>
+<tbody id="tabela-cobertura"></tbody>
+</table>
+</div></section>
+</main>
+<script src="cobertura.js"></script>
+<script>
+    document.body.classList.add("fade-in");
+  </script>
+<script>
+    document.body.classList.add("fade-in");
+    window.addEventListener("load", () => {
+      document.getElementById("loader")?.classList.add("hidden");
+    });
+  </script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script>
+    function exportarTabelaParaExcel(tabelaId, nomeArquivo) {
+      const tabela = document.getElementById(tabelaId);
+      const wb = XLSX.utils.table_to_book(tabela, { sheet: "Dados" });
+      XLSX.writeFile(wb, nomeArquivo + ".xlsx");
+    }
+
+    document.getElementById("btn-exportar")?.addEventListener("click", () => {
+      const id = document.querySelector("table").id;
+      exportarTabelaParaExcel(id, "exportado_" + id);
+    });
+  </script>
+</body>
+</html>
