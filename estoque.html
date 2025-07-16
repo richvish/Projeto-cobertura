@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"/>
+<title>Dashboard Sandrini - Estoque</title>
+<link href="style.css" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="estoque-page">
+<div class="loader" id="loader">Carregando...</div>
+<a class="logo-home-text" href="index.html">← Voltar para Home</a>
+<div class="menu-toggle">☰</div>
+<nav class="sidebar">
+<ul>
+<li><a href="index.html">Home</a></li>
+<li><a href="vendas.html">Vendas</a></li>
+<li><a href="estoque.html">Estoque</a></li>
+<li><a href="cobertura.html">Cobertura de Estoque</a></li>
+<li><a href="marcas.html">Marcas</a></li>
+</ul>
+</nav>
+<main class="container">
+<header class="header-main">
+<h1>Dashboard de Estoque</h1>
+</header>
+<section class="card" id="estoque">
+<h2>Estoque Consolidado</h2><button class="btn-padrao" id="btn-exportar" style="float: right; margin-top: -32px;">Exportar Dados</button>
+<div class="filters">
+<label>Local:</label>
+<select id="filtro-local-estoque"></select>
+<button id="btn-aplicar-estoque">Aplicar Filtro</button>
+<label style="margin-left:auto;">
+<input checked="" id="toggle-grafico-estoque" type="checkbox"/>
+          Mostrar Gráfico
+        </label>
+<div class="chart-container" id="container-grafico-estoque">
+<canvas height="100" id="grafico-estoque"></canvas>
+<div class="totais">
+        Total de Itens em Estoque: <strong id="total-estoque">0</strong>
+</div>
+<table class="styled-table">
+<thead>
+<tr>
+<th>SKU</th>
+<th>Produto</th>
+<th>Local</th>
+<th>Quantidade</th>
+</tr>
+</thead>
+<tbody id="tabela-estoque"></tbody>
+</table>
+</div></div></section>
+</main>
+<script src="estoque.js"></script>
+<script>
+    document.body.classList.add("fade-in");
+  </script>
+<script>
+    document.body.classList.add("fade-in");
+    window.addEventListener("load", () => {
+      document.getElementById("loader")?.classList.add("hidden");
+    });
+  </script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script>
+    function exportarTabelaParaExcel(tabelaId, nomeArquivo) {
+      const tabela = document.getElementById(tabelaId);
+      const wb = XLSX.utils.table_to_book(tabela, { sheet: "Dados" });
+      XLSX.writeFile(wb, nomeArquivo + ".xlsx");
+    }
+
+    document.getElementById("btn-exportar")?.addEventListener("click", () => {
+      const id = document.querySelector("table").id;
+      exportarTabelaParaExcel(id, "exportado_" + id);
+    });
+  </script>
+</body>
+</html>
